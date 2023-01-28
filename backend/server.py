@@ -3,7 +3,9 @@ import json
 from flask import Flask, request, session
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
-
+from Instructions import prompt_response
+from RelatedQuestions import RelatedQuestions
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 app = Flask(__name__)
@@ -20,7 +22,7 @@ def get_response():
     # At this point, use prompt to call OpenAI API
     prompt = request.json['prompt']
     session['prompt'] = prompt
-    res = prompt
+    res = prompt_response("Write a long detailed list answer to the question:" + prompt)
     return {"response" : res}
 
 
@@ -29,17 +31,42 @@ def get_response():
 @cross_origin()
 def get_suggestions():
 
-    # First clear past suggestions, then get new ones (Google API)
-    # use session['prompt'] to generate suggestions
-    # then do session.pop('prompt', default=None) to clear it
+    # clear past suggestions
     session.pop('suggestions', default=None)
-    session['suggestions']  = ["testing1", "testing2", "testing3"]
+    suggest = RelatedQuestions()
+    suggestions = []
 
-    # Call OpenAI API (in parallel ideally) for each suggestion
-    suggestions_res = {}
-    for suggestion in session['suggestions']:
-        suggestions_res[suggestion] = "response"
+    # Call Google suggestion API and reset session prompt
+    related_questions = suggest.get_related_questions(session['prompt'])
+    related_searches = suggest.get_related_searches(session['prompt'])
+    session.pop('prompt', default=None)
     
+    # Add stuff to list depending on if we got results from the API or not
+    if related_questions and related_searches:
+            suggestions += related_questions + related_searches
+    elif related_searches:
+        suggestions += related_searches
+    elif related_questions:
+        suggestions += related_questions
+
+    session['suggestions']  = suggestions
+
+    # Call OpenAI API in parallel for each suggestion
+    suggestions_res = {}
+    pool = ThreadPoolExecutor(max_workers=4)
+
+    # We don't want to call OpenAI more than 4 times, so limit the list length
+    if len(suggestions) <= 4:
+        # This returns a list in order after all tasks are complete
+        results = list(pool.map(prompt_response, suggestions))
+    else:
+        results = list(pool.map(prompt_response, suggestions[:4]))
+    
+    # Match titles to thread results
+    for i in range(len(results)):
+        suggestions_res[suggestions[i]] = results[i] 
+    
+    # Jsonify and return as arrays of answers
     return json.dumps(suggestions_res)
     
 

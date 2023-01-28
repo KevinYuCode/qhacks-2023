@@ -1,10 +1,11 @@
 import openai
+import os
+from dotenv import load_dotenv
 
-prompt = "Write a long detailed list answer to the question: How to deal with addiction"
 
-def prompt_response (prompt):
-
-    openai.api_key = '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'
+def prompt_response(prompt):
+    load_dotenv()
+    openai.api_key = os.getenv("open-ai-key")
 
     COMPLETIONS_MODEL = "text-davinci-003"
 
@@ -16,4 +17,4 @@ def prompt_response (prompt):
     stop=["7."]
     )["choices"][0]["text"].strip(" \n")
 
-    return response
+    return response.split("\n\n")
