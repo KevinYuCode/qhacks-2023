@@ -48,7 +48,6 @@ def get_suggestions():
         suggestions += related_questions
 
     # Call OpenAI API in parallel for each suggestion
-    suggestions_res = {}
     pool = ThreadPoolExecutor(max_workers=4)
 
     # We don't want to call OpenAI more than 4 times, so limit the list length
@@ -59,12 +58,17 @@ def get_suggestions():
         results = list(pool.map(prompt_response, suggestions[:4]))
 
     # Match titles to thread results
+    res = []
+    suggestions_res = {"suggestions": res}
+
     for i in range(len(results)):
-        suggestions_res[suggestions[i]] = results[i] 
-        print(results[i])
-    
+        res.append({
+            "title": suggestions[i],
+            "description": results[i]
+        })
+
     # Jsonify and return as arrays of answers
-    return json.dumps(suggestions_res)
+    return suggestions_res
     
 
 if __name__ == "__main__":
