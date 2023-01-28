@@ -18,18 +18,39 @@ class RelatedQuestions:
             "api_key": os.getenv("secret-api-key")
         }
 
-    def get_related_questions(self, query: string):
-        self.params["q"] = query
+    def get_related_questions(self, prompt: string):
+        self.params["q"] = prompt
         search = GoogleSearch(self.params)
         results = search.get_dict()
-        # results["related_questions"][0]["question"]
-        related_questions = results["related_questions"]
-        RQ_questions = [sub['question']
-                        for sub in related_questions]  # get only questions
-        return RQ_questions
+        if "related_questions" in results:
+            related_questions = results["related_questions"]
+            RQ_questions = [sub['question']
+                            for sub in related_questions]
+            return RQ_questions
+        else:
+            return None
+
+    def get_related_searches(self, prompt: string):
+        self.params["q"] = prompt
+        search = GoogleSearch(self.params)
+        results = search.get_dict()
+        if "related_searches" in results:
+            related_searches = results["related_searches"]
+            RS_query = [sub['query']
+                        for sub in related_searches]
+            return RS_query
+        else:
+            return None
 
 
 if __name__ == "__main__":
     questions = RelatedQuestions()
-    result = questions.get_related_questions("How to deal with depression")
-    print(result)
+    prompt = "How to stop procrastination"
+    resRQ = questions.get_related_questions(prompt)
+    resRS = questions.get_related_searches(prompt)
+    if resRQ:
+        print(resRQ)
+    else:
+        print(resRS)
+    # print("Related Questions:\n", resRQ)
+    # print("Related Searches:\n", resRS)
