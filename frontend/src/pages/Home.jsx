@@ -1,5 +1,7 @@
 import "../styles/home.css";
-function Home({ setPrompt }) {
+import { motion } from "framer-motion";
+
+function Home({ prompt, setPrompt, fetchData }) {
   return (
     <section className="home grid grid-cols-1  min-h-screen">
       <h1 className="text-5xl self-center font-normal text-[#616161] text-center">
@@ -24,9 +26,15 @@ function Home({ setPrompt }) {
             placeholder="Search your topic here."
             className="home-prompt text-center text-3xl w-[100%] max-w-[1300px] m-auto py-3"
           />
-          <button className="home-search bg-[#1D2132] w-[300px] text-white mt-[3rem] py-[1rem] text-3xl rounded-[1rem]">
+          <motion.button
+            whileHover={{ scale: 0.97 }}
+            className="home-search bg-[#1D2132] w-[300px] text-white mt-[3rem] py-[1rem] text-3xl rounded-[1rem]"
+            onClick={() => {
+              fetchData(prompt);
+            }}
+          >
             Search
-          </button>
+          </motion.button>
         </div>
       </div>
     </section>
