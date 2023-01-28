@@ -17,4 +17,10 @@ def prompt_response(prompt):
     stop=["7."]
     )["choices"][0]["text"].strip(" \n")
 
-    return response.split("\n\n")
+    # Get rid of numbering for lists because kevin is picky :(
+    res_list = response.split("\n\n")
+    for i in range(len(res_list)):
+        if res_list[i][0].isdigit():
+            res_list[i] = res_list[i][3:]
+
+    return res_list

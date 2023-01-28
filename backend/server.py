@@ -61,7 +61,6 @@ def get_suggestions():
     # Match titles to thread results
     for i in range(len(results)):
         suggestions_res[suggestions[i]] = results[i] 
-        print(results[i])
     
     # Jsonify and return as arrays of answers
     return json.dumps(suggestions_res)
