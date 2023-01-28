@@ -27,18 +27,19 @@ def get_response():
 
 
 # To get suggestions and their contents
-@app.route("/suggestions", methods=["GET"])
+@app.route("/suggestions", methods=["POST"])
 @cross_origin()
 def get_suggestions():
-
+    prompt = request.json['prompt']
+    session['prompt'] = prompt
     # clear past suggestions
     session.pop('suggestions', default=None)
     suggest = RelatedQuestions()
     suggestions = []
 
     # Call Google suggestion API and reset session prompt
-    related_questions = suggest.get_related_questions(session['prompt'])
-    related_searches = suggest.get_related_searches(session['prompt'])
+    related_questions = suggest.get_related_questions(prompt)
+    related_searches = suggest.get_related_searches(prompt)
     session.pop('prompt', default=None)
     
     # Add stuff to list depending on if we got results from the API or not
@@ -61,10 +62,11 @@ def get_suggestions():
         results = list(pool.map(prompt_response, suggestions))
     else:
         results = list(pool.map(prompt_response, suggestions[:4]))
-    
+
     # Match titles to thread results
     for i in range(len(results)):
         suggestions_res[suggestions[i]] = results[i] 
+        print(results[i])
     
     # Jsonify and return as arrays of answers
     return json.dumps(suggestions_res)
