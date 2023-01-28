@@ -9,9 +9,7 @@ load_dotenv()
 class RelatedQuestions:
 
     def __init__(self):
-        #self.api_key = os.getenv("secret-api-key")
         self.params = {
-            # "q": "How to wake up earlier",
             "google_domain": "google.ca",
             "hl": "en",
             "gl": "ca",
@@ -42,16 +40,3 @@ class RelatedQuestions:
             return RS_query
         else:
             return None
-
-
-# if __name__ == "__main__":
-#     questions = RelatedQuestions()
-#     prompt = "How to stop procrastination"
-#     resRQ = questions.get_related_questions(prompt)
-#     resRS = questions.get_related_searches(prompt)
-#     if resRQ:
-#         print(resRQ)
-#     else:
-#         print(resRS)
-    # print("Related Questions:\n", resRQ)
-    # print("Related Searches:\n", resRS)
