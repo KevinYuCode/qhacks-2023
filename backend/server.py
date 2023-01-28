@@ -3,6 +3,8 @@ import json
 from flask import Flask, request, session
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
+from Instructions import prompt_response
+from RelatedQuestions import RelatedQuestions
 
 
 load_dotenv()
@@ -20,7 +22,7 @@ def get_response():
     # At this point, use prompt to call OpenAI API
     prompt = request.json['prompt']
     session['prompt'] = prompt
-    res = prompt
+    res = prompt_response("Write a long detailed list answer to the question:" + prompt)
     return {"response" : res}
 
 
@@ -30,15 +32,32 @@ def get_response():
 def get_suggestions():
 
     # First clear past suggestions, then get new ones (Google API)
-    # use session['prompt'] to generate suggestions
-    # then do session.pop('prompt', default=None) to clear it
     session.pop('suggestions', default=None)
-    session['suggestions']  = ["testing1", "testing2", "testing3"]
+    suggest = RelatedQuestions()
+    suggestions = []
+
+    related_questions = suggest.get_related_questions(session['prompt'])
+    related_searches = suggest.get_related_searches(session['prompt'])
+    session.pop('prompt', default=None)
+    
+    if related_questions and related_searches:
+            suggestions += related_questions + related_searches
+    elif related_searches:
+        suggestions += related_searches
+    elif related_questions:
+        suggestions += related_questions
+
+    session['suggestions']  = suggestions
 
     # Call OpenAI API (in parallel ideally) for each suggestion
     suggestions_res = {}
-    for suggestion in session['suggestions']:
-        suggestions_res[suggestion] = "response"
+
+    if len(suggestions) <= 4:
+        for suggestion in suggestions:
+            suggestions_res[suggestion] = prompt_response(suggestion)
+    else:
+        for i in range(3):
+            suggestions_res[suggestions[i]] = prompt_response(suggestions[i])
     
     return json.dumps(suggestions_res)
     
