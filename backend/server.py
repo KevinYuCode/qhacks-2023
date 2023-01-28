@@ -12,29 +12,30 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] =  os.getenv("secret_key")
 
-# To call OpenAI API and Google API (main endpoint)
+# To call OpenAI API
 # Requires: json data: {"prompt" : "A chatGPT prompt"}
 @app.route("/response", methods=["POST"])
 @cross_origin()
 def get_response():
-    # At this point, use prompt to call OpenAI API and Google Suggestions API (parallel if possible)
+    # At this point, use prompt to call OpenAI API
     prompt = request.json['prompt']
+    session['prompt'] = prompt
     res = prompt
-
-    # First clear past suggestions, then get new ones
-    session.pop('suggestions', default=None)
-    session['suggestions']  = ["testing1", "testing2", "testing3"]
-    return {
-        "response" : res,
-        "suggestions": session['suggestions']
-    }
+    return {"response" : res}
 
 
-# To call OpenAI API for all recent suggestions
+# To get suggestions and their contents
 @app.route("/suggestions", methods=["GET"])
 @cross_origin()
 def get_suggestions():
-    # Call API (in parallel ideally) for each suggestion
+
+    # First clear past suggestions, then get new ones (Google API)
+    # use session['prompt'] to generate suggestions
+    # then do session.pop('prompt', default=None) to clear it
+    session.pop('suggestions', default=None)
+    session['suggestions']  = ["testing1", "testing2", "testing3"]
+
+    # Call OpenAI API (in parallel ideally) for each suggestion
     suggestions_res = {}
     for suggestion in session['suggestions']:
         suggestions_res[suggestion] = "response"
