@@ -27,7 +27,7 @@ def get_response():
 
 
 # To get suggestions and their contents
-@app.route("/suggestions", methods=["GET"])
+@app.route("/suggestions", methods=["POST"])
 @cross_origin()
 def get_suggestions():
 
