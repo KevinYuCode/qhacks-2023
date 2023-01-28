@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, request, session
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
@@ -34,11 +35,11 @@ def get_response():
 @cross_origin()
 def get_suggestions():
     # Call API (in parallel ideally) for each suggestion
-    suggestions_res = []
+    suggestions_res = {}
     for suggestion in session['suggestions']:
-        suggestions_res.append("reponse")
+        suggestions_res[suggestion] = "response"
     
-    return {"suggestion_responses": suggestions_res}
+    return json.dumps(suggestions_res)
     
 
 if __name__ == "__main__":
