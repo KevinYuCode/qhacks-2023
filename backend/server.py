@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 from Instructions import prompt_response
@@ -21,7 +21,6 @@ app.config['SECRET_KEY'] =  os.getenv("secret_key")
 def get_response():
     # At this point, use prompt to call OpenAI API
     prompt = request.json['prompt']
-    session['prompt'] = prompt
     res = prompt_response("Write a long detailed list answer to the question:" + prompt)
     return {"response" : res}
 
@@ -31,16 +30,14 @@ def get_response():
 @cross_origin()
 def get_suggestions():
     prompt = request.json['prompt']
-    session['prompt'] = prompt
     # clear past suggestions
-    session.pop('suggestions', default=None)
     suggest = RelatedQuestions()
     suggestions = []
 
+    prompt = request.json['prompt']
     # Call Google suggestion API and reset session prompt
     related_questions = suggest.get_related_questions(prompt)
     related_searches = suggest.get_related_searches(prompt)
-    session.pop('prompt', default=None)
     
     # Add stuff to list depending on if we got results from the API or not
     if related_questions and related_searches:
@@ -49,8 +46,6 @@ def get_suggestions():
         suggestions += related_searches
     elif related_questions:
         suggestions += related_questions
-
-    session['suggestions']  = suggestions
 
     # Call OpenAI API in parallel for each suggestion
     suggestions_res = {}
