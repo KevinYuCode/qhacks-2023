@@ -1,5 +1,5 @@
 import os
-import json
+import random
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
@@ -69,7 +69,25 @@ def get_suggestions():
 
     # Jsonify and return as arrays of answers
     return suggestions_res
+
+
+@app.route("/loading", methods=["GET"])
+@cross_origin()
+def get_loading_prompts():
+    tips = [
+        "Show some love to someone in your life!",
+        "Treat yourself with kindness and respect, and avoid self-criticism!", 
+        "Eat a brain-healthy diet to support strong mental health.",
+        "Practice mindfulness and meditation!",
+        "Stay connected to your friends and family.",
+        "Drink lots of water to keep yourself healthy and hydrated." 
+        "Learn new skills instead of sitting on your ass all day complaining all the time!",
+        "Do something meaningful each day.",
+        "Don't be disappointed if all you do today is a miniscule task."
+    ]
     
+    return {"tip": tips[random.randint(0, 9)]}
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
