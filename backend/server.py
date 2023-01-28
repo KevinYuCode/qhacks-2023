@@ -5,7 +5,7 @@ from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 from Instructions import prompt_response
 from RelatedQuestions import RelatedQuestions
-
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 app = Flask(__name__)
@@ -31,15 +31,17 @@ def get_response():
 @cross_origin()
 def get_suggestions():
 
-    # First clear past suggestions, then get new ones (Google API)
+    # clear past suggestions
     session.pop('suggestions', default=None)
     suggest = RelatedQuestions()
     suggestions = []
 
+    # Call Google suggestion API and reset session prompt
     related_questions = suggest.get_related_questions(session['prompt'])
     related_searches = suggest.get_related_searches(session['prompt'])
     session.pop('prompt', default=None)
     
+    # Add stuff to list depending on if we got results from the API or not
     if related_questions and related_searches:
             suggestions += related_questions + related_searches
     elif related_searches:
@@ -49,16 +51,22 @@ def get_suggestions():
 
     session['suggestions']  = suggestions
 
-    # Call OpenAI API (in parallel ideally) for each suggestion
+    # Call OpenAI API in parallel for each suggestion
     suggestions_res = {}
+    pool = ThreadPoolExecutor(max_workers=4)
 
+    # We don't want to call OpenAI more than 4 times, so limit the list length
     if len(suggestions) <= 4:
-        for suggestion in suggestions:
-            suggestions_res[suggestion] = prompt_response(suggestion)
+        # This returns a list in order after all tasks are complete
+        results = list(pool.map(prompt_response, suggestions))
     else:
-        for i in range(3):
-            suggestions_res[suggestions[i]] = prompt_response(suggestions[i])
+        results = list(pool.map(prompt_response, suggestions[:4]))
     
+    # Match titles to thread results
+    for i in range(len(results)):
+        suggestions_res[suggestions[i]] = results[i] 
+    
+    # Jsonify and return as arrays of answers
     return json.dumps(suggestions_res)
     
 
