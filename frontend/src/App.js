@@ -15,20 +15,20 @@ function App() {
     console.log(prompt);
 
     // Get Response for prompt
-    // fetch("http://127.0.0.1:5000/response", {
-    //   method: "POST", // or 'PUT'
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ prompt }),
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log("FIRST CALL");
-    //     console.log(data);
-    //     console.log(data.response[0]);
-    //     setData(data.response);
-    //   });
+    fetch("http://127.0.0.1:5000/response", {
+      method: "POST", // or 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("FIRST CALL");
+        console.log(data);
+        console.log(data.response[0]);
+        setData(data.response);
+      });
 
     // Getting more suggestions
     fetch("http://127.0.0.1:5000/suggestions", {
