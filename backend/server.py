@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 from Instructions import prompt_response
@@ -21,25 +21,23 @@ app.config['SECRET_KEY'] =  os.getenv("secret_key")
 def get_response():
     # At this point, use prompt to call OpenAI API
     prompt = request.json['prompt']
-    session['prompt'] = prompt
     res = prompt_response("Write a long detailed list answer to the question:" + prompt)
     return {"response" : res}
 
 
 # To get suggestions and their contents
-@app.route("/suggestions", methods=["GET"])
+@app.route("/suggestions", methods=["POST"])
 @cross_origin()
 def get_suggestions():
-
+    prompt = request.json['prompt']
     # clear past suggestions
-    session.pop('suggestions', default=None)
     suggest = RelatedQuestions()
     suggestions = []
 
+    prompt = request.json['prompt']
     # Call Google suggestion API and reset session prompt
-    related_questions = suggest.get_related_questions(session['prompt'])
-    related_searches = suggest.get_related_searches(session['prompt'])
-    session.pop('prompt', default=None)
+    related_questions = suggest.get_related_questions(prompt)
+    related_searches = suggest.get_related_searches(prompt)
     
     # Add stuff to list depending on if we got results from the API or not
     if related_questions and related_searches:
@@ -48,8 +46,6 @@ def get_suggestions():
         suggestions += related_searches
     elif related_questions:
         suggestions += related_questions
-
-    session['suggestions']  = suggestions
 
     # Call OpenAI API in parallel for each suggestion
     suggestions_res = {}
@@ -61,10 +57,11 @@ def get_suggestions():
         results = list(pool.map(prompt_response, suggestions))
     else:
         results = list(pool.map(prompt_response, suggestions[:4]))
-    
+
     # Match titles to thread results
     for i in range(len(results)):
         suggestions_res[suggestions[i]] = results[i] 
+        print(results[i])
     
     # Jsonify and return as arrays of answers
     return json.dumps(suggestions_res)
