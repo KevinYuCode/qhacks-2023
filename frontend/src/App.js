@@ -4,16 +4,20 @@ import Home from "./pages/Home";
 import Response from "./pages/Response";
 import Recommendations from "./pages/Recommendations";
 import SearchIcon from "./components/SearchIcon";
+import { animateScroll as scroll } from "react-scroll";
 
 function App() {
   const [prompt, setPrompt] = useState(null);
   const [data, setData] = useState(null);
   const [suggestions, setSuggestions] = useState(null);
 
-  // http://127.0.0.1:5000/suggestions
-  const fetchData = (prompt) => {
-    console.log(prompt);
+  const scrollTo = (pageId) => {
+    let page = document.getElementById(pageId);
 
+    scroll.scrollTo(page.offsetTop);
+  };
+
+  const fetchData = (prompt) => {
     // Get Response for prompt
     fetch("http://127.0.0.1:5000/response", {
       method: "POST", // or 'PUT'
@@ -28,6 +32,8 @@ function App() {
         console.log(data);
         console.log(data.response[0]);
         setData(data.response);
+
+        scrollTo("Response"); //Scroll to the suggestion
       });
 
     // Getting more suggestions
@@ -49,10 +55,19 @@ function App() {
   };
   return (
     <div className="App bg-[#F1F1F1] min-h-screen">
-      <Home prompt={prompt} setPrompt={setPrompt} fetchData={fetchData} />
-      <Response prompt={prompt} data={data} />
-      <Recommendations data={data} />
-      <SearchIcon />
+      <Home
+        prompt={prompt}
+        setPrompt={setPrompt}
+        scrollTo={scrollTo}
+        fetchData={fetchData}
+      />
+      <Response prompt={prompt} scrollTo={scrollTo} data={data} />
+      <Recommendations
+        suggestions={suggestions}
+        scrollTo={scrollTo}
+        data={data}
+      />
+      <SearchIcon scrollTo={scrollTo} />
     </div>
   );
 }

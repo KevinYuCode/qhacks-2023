@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 function Home({ prompt, setPrompt, fetchData }) {
   return (
-    <section className="home grid grid-cols-1  min-h-screen">
+    <section id="Home" className="home grid grid-cols-1  min-h-screen">
       <h1 className="text-5xl self-center font-normal text-[#616161] text-center">
         BuddyHack
       </h1>
