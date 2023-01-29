@@ -1,5 +1,5 @@
 import os
-import json
+import random
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
@@ -19,7 +19,7 @@ app.config['SECRET_KEY'] =  os.getenv("secret_key")
 @app.route("/response", methods=["POST"])
 @cross_origin()
 def get_response():
-    # At this point, use prompt to call OpenAI API
+    # Use prompt to call OpenAI API
     prompt = request.json['prompt']
     res = prompt_response("Write a long detailed list answer to the question:" + prompt)
     return {"response" : res}
@@ -29,17 +29,15 @@ def get_response():
 @app.route("/suggestions", methods=["POST"])
 @cross_origin()
 def get_suggestions():
+    # Call Google suggestion API
     prompt = request.json['prompt']
-    # clear past suggestions
     suggest = RelatedQuestions()
-    suggestions = []
-
     prompt = request.json['prompt']
-    # Call Google suggestion API and reset session prompt
     related_questions = suggest.get_related_questions(prompt)
     related_searches = suggest.get_related_searches(prompt)
     
     # Add stuff to list depending on if we got results from the API or not
+    suggestions = []
     if related_questions and related_searches:
             suggestions += related_questions + related_searches
     elif related_searches:
@@ -69,7 +67,26 @@ def get_suggestions():
 
     # Jsonify and return as arrays of answers
     return suggestions_res
+
+
+# To return a random tip during loading
+@app.route("/loading", methods=["GET"])
+@cross_origin()
+def get_loading_prompts():
+    tips = [
+        "Show some love to someone in your life!",
+        "Treat yourself with kindness and respect, and avoid self-criticism!", 
+        "Eat a brain-healthy diet to support strong mental health.",
+        "Practice mindfulness and meditation!",
+        "Stay connected to your friends and family.",
+        "Drink lots of water to keep yourself healthy and hydrated.",
+        "Learn new skills instead of sitting on your ass all day complaining all the time!",
+        "Do something meaningful each day.",
+        "Don't be disappointed if all you do today is a miniscule task."
+    ]
     
+    return {"tip": tips[random.randint(0, 8)]}
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
