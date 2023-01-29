@@ -85,12 +85,13 @@ def get_loading_prompts():
         "Practice mindfulness and meditation!",
         "Stay connected to your friends and family.",
         "Drink lots of water to keep yourself healthy and hydrated.",
-        "Learn new skills instead of sitting on your ass all day complaining all the time!",
+        "We suffer more often in imagination than in reality.",
         "Do something meaningful each day.",
-        "Don't be disappointed if all you do today is a miniscule task."
+        "Don't be disappointed if all you do today is a miniscule task.",
+        "He suffers more than necessary, who suffers before it is necessary."
     ]
     
-    return {"tip": tips[random.randint(0, 8)]}
+    return {"tip": tips[random.randint(0, 9)]}
 
 
 if __name__ == "__main__":

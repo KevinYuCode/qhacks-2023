@@ -23,9 +23,9 @@ function SearchIcon({ scrollTo }) {
       className="search-content flex justify-center items-center fixed bottom-[30px] right-[30px] p-[1rem] rounded-full"
     >
       {hovered ? (
-        <motion.img src={MagnifyGlass} alt="Magnify Glasss" />
+        <motion.img className="w-[20px] lg:w-[30px]" src={MagnifyGlass} alt="Magnify Glasss" />
       ) : (
-        <motion.img src={MagnifyGlassBlack} alt="Magnify Glasss" />
+        <motion.img className="w-[20px] lg:w-[30px]" src={MagnifyGlassBlack} alt="Magnify Glasss" />
       )}
     </motion.button>
   );
