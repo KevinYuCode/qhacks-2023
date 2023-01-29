@@ -8,11 +8,16 @@ from RelatedQuestions import RelatedQuestions
 from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="", static_folder='./build', template_folder='build')
 cors = CORS(app)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] =  os.getenv("secret_key")
+
+
+@app.route("/", methods=["GET"])
+def frontend():
+    return app.send_static_file('index.html')
 
 # To call OpenAI API
 # Requires: json data: {"prompt" : "A chatGPT prompt"}
