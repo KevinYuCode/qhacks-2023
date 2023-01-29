@@ -17,7 +17,7 @@ function Response({ prompt, data, scrollTo }) {
         )}
         <div className="flex flex-col w-[100%] max-w-[1200px] mt-[.5rem] max-h-[350px] overflow-scroll">
           {data?.map((suggestion, key) => (
-            <div key={key} className="flex gap-4">
+            <motion.div key={key} className="flex gap-4">
               <p className="text-2xl text-left leading-9">{key + 1}.</p>
               <p
                 key={key}
@@ -25,7 +25,7 @@ function Response({ prompt, data, scrollTo }) {
               >
                 {suggestion}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
