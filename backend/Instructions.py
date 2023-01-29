@@ -19,14 +19,13 @@ def prompt_response(prompt):
 
 
     # Get rid of numbering for lists because kevin is picky :(
-    res_list = response.split("\n\n")
+    res_list = response.replace("\n\n", "\n").split("\n")
     for i in range(len(res_list)):
-        if res_list[i][0].isdigit():
-            res_list[i] = res_list[i][3:]
+        if len(res_list[i]) > 0:
+            if res_list[i][0].isdigit():
+                res_list[i] = res_list[i][3:]
 
     return res_list
-
-    return response.split("\n\n")
 
 
 def prompt_image(prompt):
