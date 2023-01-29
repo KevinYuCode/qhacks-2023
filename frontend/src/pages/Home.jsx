@@ -15,7 +15,7 @@ function Home({
         BuddyHack
       </h1>
 
-      <div className="home-content mt-[3rem] flex items-center flex-col min-h-full min-w-full content-around">
+      <div className="home-content pt-[3rem] flex items-center flex-col min-h-full min-w-full content-around">
         <h2
           className="header-tag 
         text-center text-5xl font-normal w-[100%]"
@@ -56,7 +56,7 @@ function Home({
               animate={{ opacity: [0, 1] }}
               transition={{ duration: 1, delay: 0.5 }}
             >
-              {suggestions}
+              {lazySuggestions}
             </motion.h1>
             <motion.div className="dot-container flex gap-[1rem]">
               <motion.div

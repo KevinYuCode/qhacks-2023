@@ -51,7 +51,7 @@ function App() {
         console.log(data);
         console.log(data.response[0]);
         setData(data.response);
-
+        setLazySuggestions(null);
         scrollTo("Response"); //Scroll to the suggestion
       });
 
@@ -88,13 +88,17 @@ function App() {
         data={data}
         lazySuggestions={lazySuggestions}
       />
-      <Response prompt={prompt} scrollTo={scrollTo} data={data} />
-      <Recommendations
-        suggestions={suggestions}
-        scrollTo={scrollTo}
-        data={data}
-        recommendedPrompt={recommendedPrompt}
-      />
+      {data && (
+        <>
+          <Response prompt={prompt} scrollTo={scrollTo} data={data} />
+          <Recommendations
+            suggestions={suggestions}
+            scrollTo={scrollTo}
+            data={data}
+            recommendedPrompt={recommendedPrompt}
+          />
+        </>
+      )}
       <SearchIcon scrollTo={scrollTo} />
     </div>
   );
