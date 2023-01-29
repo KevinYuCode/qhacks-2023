@@ -11,7 +11,7 @@ function Recommendations({ suggestions, data, scrollTo, recommendedPrompt }) {
         {suggestions?.map((suggestion, key) => (
           <button
             key={key}
-            className="recommended-topics rounded-[.8rem] min-h-[200px] max-w-[700px] min-w-[300px]"
+            className="recommended-topics rounded-[.8rem] min-h-[200px] max-w-[700px] w-[500px]"
             onClick={() => {
               scrollTo("Response");
               recommendedPrompt(suggestion.title, suggestion.description);

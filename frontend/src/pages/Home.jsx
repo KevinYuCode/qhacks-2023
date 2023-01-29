@@ -1,19 +1,21 @@
 import "../styles/home.css";
 import { motion } from "framer-motion";
+import logo from "../assets/Logo.png";
 
 function Home({
   prompt,
   setPrompt,
   fetchData,
-  data,
   lazySuggestions,
-  suggestions,
 }) {
   return (
     <section id="Home" className="home grid grid-cols-1  min-h-screen">
-      <h1 className="text-5xl self-center font-normal text-[#616161] text-center">
-        BuddyHack
-      </h1>
+      <div className="flex flex-col justify-center items-center">
+        <img className="w-[100px]" src={logo} alt="Logo" />
+        <h1 className="text-5xl self-center font-normal text-[#616161] text-center">
+          MindHack
+        </h1>
+      </div>
 
       <div className="home-content pt-[3rem] flex items-center flex-col min-h-full min-w-full content-around">
         <h2
@@ -31,7 +33,7 @@ function Home({
               onChange={(e) => {
                 setPrompt(e.target.value);
               }}
-              placeholder="Search your topic here."
+              placeholder="Eg. How to get better sleep?"
               className="home-prompt text-center text-3xl w-[100%] max-w-[1300px] m-auto py-3"
             />
             <motion.button

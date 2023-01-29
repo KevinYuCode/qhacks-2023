@@ -42,7 +42,7 @@ function Response({ prompt, data, scrollTo }) {
           animate={{ y: [0, 5, 0] }}
           transition={{
             delay: 0,
-            duration: 2,
+            duration: 3,
             repeat: Infinity,
             ease: "linear",
           }}

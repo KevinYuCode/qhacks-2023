@@ -4,13 +4,16 @@ import MagnifyGlassBlack from "../assets/MagnifyGlassBlack.png";
 import { motion } from "framer-motion";
 
 import "../styles/searchIcon.css";
-function SearchIcon() {
+function SearchIcon({ scrollTo }) {
   let [hovered, setHovered] = useState(true);
   return (
     <motion.button
       whileHover={{ scale: 0.97, backgroundColor: "#ffffff" }}
-      transition={{ duration: .5 }}
+      transition={{ duration: 0.5 }}
       initial={{ backgroundColor: "#1d2132" }}
+      onClick={() => {
+        scrollTo("Home");
+      }}
       onMouseEnter={() => {
         setHovered(false);
       }}

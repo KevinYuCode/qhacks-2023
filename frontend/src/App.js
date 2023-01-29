@@ -19,6 +19,10 @@ function App() {
   };
 
   const fetchData = (prompt) => {
+    if (prompt === "") {
+      alert("Please enter a non-empty prompt.");
+      return;
+    }
     setData(null);
     setSuggestions(null);
 
@@ -31,9 +35,10 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("LOADING CALL");
+        console.log(
+          " ------------------- RECOMMENDED TOPICS -------------------"
+        );
         console.log(data);
-        console.log(data.tip);
         setLazySuggestions(data.tip);
       });
 
@@ -47,12 +52,14 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("FIRST CALL");
         console.log(data);
-        console.log(data.response[0]);
+        console.log(data);
         setData(data.response);
         setLazySuggestions(null);
-        scrollTo("Response"); //Scroll to the suggestion
+
+        setTimeout(() => {
+          scrollTo("Response"); //Scroll to the suggestion
+        }, 200);
       });
 
     // Getting more suggestions
