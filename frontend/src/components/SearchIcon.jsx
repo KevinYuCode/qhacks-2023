@@ -1,11 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import MagnifyGlass from "../assets/MagnifyGlass.png";
-import "../styles/searchIcon.css"
-function SearchIcon() {
+import MagnifyGlassBlack from "../assets/MagnifyGlassBlack.png";
+import { motion } from "framer-motion";
+
+import "../styles/searchIcon.css";
+function SearchIcon({ scrollTo }) {
+  let [hovered, setHovered] = useState(true);
   return (
-    <button className="search-content flex justify-center items-center fixed bg-[#1D2132] bottom-[30px] right-[30px] p-[1rem] rounded-full">
-      <img src={MagnifyGlass} alt="Magnify Glasss" />
-    </button>
+    <motion.button
+      whileHover={{ scale: 0.97, backgroundColor: "#ffffff" }}
+      transition={{ duration: 0.5 }}
+      initial={{ backgroundColor: "#1d2132" }}
+      onClick={() => {
+        scrollTo("Home");
+      }}
+      onMouseEnter={() => {
+        setHovered(false);
+      }}
+      onMouseLeave={() => {
+        setHovered(true);
+      }}
+      className="search-content flex justify-center items-center fixed bottom-[30px] right-[30px] p-[1rem] rounded-full"
+    >
+      {hovered ? (
+        <motion.img src={MagnifyGlass} alt="Magnify Glasss" />
+      ) : (
+        <motion.img src={MagnifyGlassBlack} alt="Magnify Glasss" />
+      )}
+    </motion.button>
   );
 }
 
