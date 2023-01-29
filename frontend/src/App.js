@@ -27,7 +27,7 @@ function App() {
     setSuggestions(null);
 
     // Gets the lazy loading message tip
-    fetch("http://127.0.0.1:5000/loading", {
+    fetch("/loading", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +43,7 @@ function App() {
       });
 
     // Get Response for prompt
-    fetch("http://127.0.0.1:5000/response", {
+    fetch("/response", {
       method: "POST", // 'PUT'
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +63,7 @@ function App() {
       });
 
     // Getting more suggestions
-    fetch("http://127.0.0.1:5000/suggestions", {
+    fetch("/suggestions", {
       method: "POST", // or 'PUT'
       headers: {
         "Content-Type": "application/json",
